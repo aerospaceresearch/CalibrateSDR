@@ -35,6 +35,11 @@ if __name__ == "__main__":
                            action='store',
                            help='scan with gain',
                            default=20)
+    my_parser.add_argument('-gr',
+                           '--graph',
+                           action='store_true',
+                           help='activate graphs',
+                           default=False)
     my_parser.add_argument('-v',
                            '--verbose',
                            action='store_true',
@@ -44,6 +49,9 @@ if __name__ == "__main__":
     args = my_parser.parse_args()
     print(vars(args))
     input = vars(args)
+
+    show_graph = input["graph"]
+    verbose = input["verbose"]
 
 
     if input["f"] is not None:
@@ -56,7 +64,7 @@ if __name__ == "__main__":
 
             if mode == "dab":
                 print("starting mode: dab")
-                ppm = cali.dabplus.dab.get_ppm(data, samplerate = samplerate)
+                ppm = cali.dabplus.dab.get_ppm(data, samplerate = samplerate, show_graph=show_graph, verbose=verbose)
                 print("your sdr's ppm is", ppm)
 
             elif mode == "dvbt":

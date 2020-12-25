@@ -1,7 +1,8 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import calibratesdr as cali
 
-def get_ppm(data, samplerate = 2048000):
+def get_ppm(data, samplerate = 2048000, show_graph = False, verbose=False):
     adc_offset = -127
 
     data_slice = (adc_offset + data[0:: 2]) + 1j * (adc_offset + data[1:: 2])
@@ -57,8 +58,35 @@ def get_ppm(data, samplerate = 2048000):
 
 
     # needle can reach out of data. no check yet
-    needle = signal_meaned[gap_position[needle_index] + gap_length[needle_index] + 200:
-                           gap_position[needle_index] + gap_length[needle_index] + 2400]
+    needle_length = 2400
+    needle_start = gap_position[needle_index] + gap_length[needle_index] + 200
+    needle_end = gap_position[needle_index] + gap_length[needle_index] + needle_length
+    needle = signal_meaned[needle_start: needle_end]
+
+
+    if show_graph == True:
+        # just showing the needle on the signal
+
+        graph_start = gap_position[needle_index] + gap_length[needle_index] - null_symbol_duration * 2
+        graph_end = gap_position[needle_index] + gap_length[needle_index] + null_symbol_duration * 2
+        if graph_start <0:
+            graph_start = 0
+
+        needle_x_position = []
+        start = (gap_position[needle_index] + gap_length[needle_index] + 200) - graph_start
+        for i in range(len(needle)):
+            needle_x_position.append(start + i)
+
+        plt.plot(signal_meaned[graph_start: graph_end], label="signal")
+        plt.plot(needle_x_position, needle, label="needle")
+        plt.grid()
+        plt.xlabel("sample [s]")
+        plt.ylabel("amplitude [int]")
+        plt.title("selected needle")
+        plt.legend()
+        plt.show()
+
+
 
     needle2 = np.sum(np.multiply(needle, needle))
     window = len(needle)
@@ -79,7 +107,7 @@ def get_ppm(data, samplerate = 2048000):
                 normed_cross_correlation = normed_cross_correlation / \
                                            (np.sum(np.multiply(haystack_part, haystack_part)) * needle2) ** 0.5
 
-                cor_result[start + j] = normed_cross_correlation * 100.0
+                cor_result[start + j] = normed_cross_correlation * signal_mean
 
     gap_location = []
     gap_location_pin = []
@@ -92,7 +120,18 @@ def get_ppm(data, samplerate = 2048000):
             index_max = i + np.argmax(haystack)
 
             gap_location.append(index_max)
-            gap_location_pin.append(70)
+            gap_location_pin.append(signal_mean * 1.4)
+
+
+    if show_graph == True:
+        for i in range(len(gap_location)):
+            plt.plot(signal_meaned[gap_location[i]: gap_location[i] + needle_length], label="signal")
+
+        plt.grid()
+        plt.xlabel("sample [s]")
+        plt.ylabel("amplitude [int]")
+        plt.title("all found phase sync symbols")
+        plt.show()
 
 
     # delete the outliers
@@ -116,6 +155,22 @@ def get_ppm(data, samplerate = 2048000):
 
     else:
         ppm = None
+
+
+    if show_graph == True:
+
+        steps = np.linspace(0, len(signal_meaned)-1, num=len(signal_meaned))
+
+        plt.plot(steps[::20], signal_meaned[::20], label="signal")
+        plt.plot(steps[::20], cor_result[::20], label="correlations of needle")
+        plt.plot(gap_location, gap_location_pin, "*", label="locations of needle")
+
+        plt.grid()
+        plt.xlabel("sample [s]")
+        plt.ylabel("amplitude [int]")
+        plt.title("show detected phase syncronizations")
+        plt.legend()
+        plt.show()
 
     return ppm
 
