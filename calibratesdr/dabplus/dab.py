@@ -147,10 +147,10 @@ def get_ppm(data, samplerate = 2048000, show_graph = False, verbose=False):
         total_samples_measured = np.sum(dif)
         total_samples = len(dif) * samplerate * transmission_frame_duration
         ppm_measured = total_samples - total_samples_measured
-        if total_samples_measured > 0:
-            factor = total_samples_measured / 1000000
-            ppm = ppm_measured / factor
-        else:
+        factor = total_samples_measured / 1000000
+        ppm = ppm_measured / factor
+
+        if total_samples_measured == 0 or np.abs(ppm) >= 10000.0:
             ppm = None
 
     else:
@@ -173,6 +173,90 @@ def get_ppm(data, samplerate = 2048000, show_graph = False, verbose=False):
         plt.show()
 
     return ppm
+
+
+def channels():
+    dab = {"dab": [
+        {"block": "5A", "f_center": 174928000},
+        {"block": "5B", "f_center": 176640000},
+        {"block": "5C", "f_center": 178352000},
+        {"block": "5D", "f_center": 180064000},
+        {"block": "6A", "f_center": 181936000},
+        {"block": "6B", "f_center": 183648000},
+        {"block": "6C", "f_center": 185360000},
+        {"block": "6D", "f_center": 187072000},
+        {"block": "7A", "f_center": 188928000},
+        {"block": "7B", "f_center": 190640000},
+        {"block": "7C", "f_center": 192352000},
+        {"block": "7D", "f_center": 194064000},
+        {"block": "8A", "f_center": 195936000},
+        {"block": "8B", "f_center": 197648000},
+        {"block": "8C", "f_center": 199360000},
+        {"block": "8D", "f_center": 201072000},
+        {"block": "9A", "f_center": 202928000},
+        {"block": "9B", "f_center": 204640000},
+        {"block": "9C", "f_center": 206352000},
+        {"block": "9D", "f_center": 208064000},
+        {"block": "10A", "f_center": 209936000},
+        {"block": "10N", "f_center": 210096000},
+        {"block": "10B", "f_center": 211648000},
+        {"block": "10C", "f_center": 213360000},
+        {"block": "10D", "f_center": 215072000},
+        {"block": "11A", "f_center": 216928000},
+        {"block": "11N", "f_center": 217088000},
+        {"block": "11B", "f_center": 218640000},
+        {"block": "11C", "f_center": 220352000},
+        {"block": "11D", "f_center": 222064000},
+        {"block": "12A", "f_center": 223936000},
+        {"block": "12N", "f_center": 224096000},
+        {"block": "12B", "f_center": 225648000},
+        {"block": "12C", "f_center": 227360000},
+        {"block": "12D", "f_center": 229072000}
+    ]}
+
+    return dab
+
+def signal_level(data, segment):
+
+    step = int(len(data) / segment)
+    #print(step)
+
+    level = []
+    for i in range(0, len(data), step*2):
+        level.append(np.mean(data[i : i + step]))
+
+    return level
+
+
+def signal_dynamics(data, side):
+
+    dyn_sides = (np.mean(data[0:side]) + np.mean(data[-side:])) / 2.0
+    dyn_center = np.mean(data[side: -side])
+
+    return dyn_center - dyn_sides
+
+
+def signal_dynamics_edges(left, right):
+
+    dyn_left = np.mean(left)
+    dyn_right = np.mean(right)
+
+    return np.abs(dyn_left - dyn_right)
+
+
+def block_check(signal_bins, snr, limit_db=2.0):
+    left = signal_dynamics_edges(signal_bins[0 : 20], signal_bins[20 : 20 * 2])
+    right = signal_dynamics_edges(signal_bins[-20 * 2 : -20], signal_bins[-20 : ])
+
+    block_detected = 0
+
+    if snr > limit_db:
+        block_detected = 2
+
+        if np.abs(left - right) > limit_db:
+            block_detected = 1
+
+    return block_detected
 
 
 if __name__ == '__main__':
