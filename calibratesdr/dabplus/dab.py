@@ -82,7 +82,7 @@ def get_ppm(data, samplerate = 2048000, show_graph = False, verbose=False):
         plt.grid()
         plt.xlabel("sample [s]")
         plt.ylabel("amplitude [int]")
-        plt.title("selected needle")
+        plt.title("synch. channel symbols w/ phase reference as selected needle")
         plt.legend()
         plt.show()
 
@@ -130,7 +130,7 @@ def get_ppm(data, samplerate = 2048000, show_graph = False, verbose=False):
         plt.grid()
         plt.xlabel("sample [s]")
         plt.ylabel("amplitude [int]")
-        plt.title("all found phase sync symbols")
+        plt.title("all found phase reference symbols in the recording")
         plt.show()
 
 

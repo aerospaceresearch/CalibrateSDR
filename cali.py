@@ -7,6 +7,41 @@ def load_data(filename, offset):
     samples = np.memmap(filename, offset=offset)
     return samples
 
+def main(input):
+
+    print("let's find your SDR's oscillator precision")
+
+    show_graph = input["graph"]
+    verbose = input["verbose"]
+
+    if input["f"] is not None:
+        filename = input["f"]
+        samplerate = input["rs"]
+        mode = input["m"]
+
+        if os.path.exists(filename):
+            data = load_data(filename, offset=44)
+
+            if mode == "dab":
+                print("starting mode: dab")
+                ppm = cali.dabplus.dab.get_ppm(data, samplerate=samplerate, show_graph=show_graph, verbose=verbose)
+                print("your sdr's precision is", ppm, "ppm")
+
+            elif mode == "dvbt":
+                print("starting mode: dvbt")
+                cali.dvbt.dvbt.main()
+
+            elif mode == "gsm":
+                print("starting mode: gsm")
+                cali.gsm.gsm.main()
+
+            else:
+                print("ending")
+
+        else:
+            print("sorry, file not found. try again.")
+
+
 if __name__ == "__main__":
     my_parser = argparse.ArgumentParser()
 
@@ -47,38 +82,6 @@ if __name__ == "__main__":
 
     # Execute parse_args()
     args = my_parser.parse_args()
-    print(vars(args))
-    input = vars(args)
+    #print(vars(args))
 
-    show_graph = input["graph"]
-    verbose = input["verbose"]
-
-
-    if input["f"] is not None:
-        filename = input["f"]
-        samplerate = input["rs"]
-        mode = input["m"]
-
-        if os.path.exists(filename):
-            data = load_data(filename, offset=44)
-
-            if mode == "dab":
-                print("starting mode: dab")
-                ppm = cali.dabplus.dab.get_ppm(data, samplerate = samplerate, show_graph=show_graph, verbose=verbose)
-                print("your sdr's ppm is", ppm)
-
-            elif mode == "dvbt":
-                print("starting mode: dvbt")
-                cali.dvbt.dvbt.main()
-
-            elif mode == "gsm":
-                print("starting mode: gsm")
-                cali.gsm.gsm.main()
-
-            else:
-                print("ending")
-
-        else:
-            print("sorry, file not found. try again.")
-
-        #print(input["f"], input["rs"], input["m"])
+    main(vars(args))
