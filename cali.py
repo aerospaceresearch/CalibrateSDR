@@ -35,6 +35,60 @@ def main(input):
                 print("starting mode: gsm")
                 cali.gsm.gsm.main()
 
+            if mode == "nwr":
+                if input["tf"] != None:
+                    print("starting mode: noaa weather radio, nwr")
+                    center_f = input["tf"]
+                    print(center_f)
+
+
+                    nwr_signal_fft = cali.utils.get_fft(data, samplerate=samplerate)
+                    result = cali.noaa.nwr.get_ppm(nwr_signal_fft, samplerate=samplerate,
+                                                window = samplerate, center_f=center_f,
+                                                show_graph=show_graph, verbose=verbose)
+
+                    # output
+                    nwr_snr_max = 0
+                    for i in range(len(result)):
+                        if i == 0 or nwr_snr_max < result[i][3]:
+                            nwr_snr_max = result[i][3]
+
+
+                    print("")
+                    print("____Results_______________________________________________________________________________________")
+                    print("#   ,station, freq [Hz], SNR [dB] , Prec. [ppm], offset [Hz], block [x][o][ ] & signal strength")
+                    print("--------------------------------------------------------------------------------------------------")
+                    for i in range(len(result)):
+                        channel = result[i][0]
+                        station = result[i][1]
+                        cf = result[i][2]
+                        nwr_snr = result[i][3]
+
+                        dab_block_detected = "[ ]"
+                        if result[i][4] == 1:
+                            dab_block_detected = "[o]"
+                        elif result[i][4] == 2:
+                            dab_block_detected = "[x]"
+
+                        nwr_ppm = result[i][5]
+
+                        bar = cali.utils.signal_bar(nwr_snr, nwr_snr_max)
+
+                        f_offset = 0.0
+
+                        if nwr_ppm != None:
+                            f_offset = cf / 1000000.0 * nwr_ppm
+
+                            print("# {0:2d}, {1:6s}, {2:9.0f}, {3:+9.5f}, {4:+10.4f}, {5:+11.1f}, {6:4s} {7}".
+                                  format(channel, station, cf, nwr_snr, nwr_ppm, f_offset, dab_block_detected, bar))
+                        else:
+
+                            print("# {0:2d}, {1:6s}, {2:9.0f}, {3:+9.5f},       None, {5:+11.1f}, {6:4s} {7}".
+                                  format(channel, station, cf, nwr_snr, nwr_ppm, f_offset, dab_block_detected, bar))
+
+                else:
+                    print("please provide center frequency in file")
+
             else:
                 print("ending")
 
@@ -96,7 +150,7 @@ def main(input):
 
             print("")
             print("____Results_______________________________________________________________________________________")
-            print("#   , block, freq [Hz], SNR [dB] , Prec. [ppm], offset [Hz], block [x][o][ ] & signal strength")
+            print("#   , block , freq [Hz], SNR [dB] , Prec. [ppm], offset [Hz], block [x][o][ ] & signal strength")
             print("--------------------------------------------------------------------------------------------------")
             for i in range(len(result)):
                 channel = result[i][0]
@@ -119,11 +173,11 @@ def main(input):
                 if dab_ppm != None:
                     f_offset = cf / 1000000.0 * dab_ppm
 
-                    print("# {0:2d}, {1:5s}, {2:9.0f}, {3:+9.5f}, {4:+10.4f}, {5:+11.1f}, {6:4s} {7}".
+                    print("# {0:2d}, {1:6s}, {2:9.0f}, {3:+9.5f}, {4:+10.4f}, {5:+11.1f}, {6:4s} {7}".
                           format(channel, block, cf, dab_snr, dab_ppm, f_offset, dab_block_detected, bar))
                 else:
 
-                    print("# {0:2d}, {1:5s}, {2:9.0f}, {3:+9.5f},       None, {5:+11.1f}, {6:4s} {7}".
+                    print("# {0:2d}, {1:6s}, {2:9.0f}, {3:+9.5f},       None, {5:+11.1f}, {6:4s} {7}".
                           format(channel, block, cf, dab_snr, dab_ppm, f_offset, dab_block_detected, bar))
 
             sdr.close()
@@ -147,9 +201,13 @@ if __name__ == "__main__":
                            action='store',
                            type=str,
                            help='select path to input file')
+    my_parser.add_argument('-tf',
+                           action='store',
+                           type=float,
+                           help='tuned frequency in file')
     my_parser.add_argument('-m',
                            action='store',
-                           choices=['dab', 'dvbt', 'gsm'],
+                           choices=['dab', 'dvbt', 'gsm', 'nwr'],
                            help='select mode',
                            default='dab')
     my_parser.add_argument('-s',

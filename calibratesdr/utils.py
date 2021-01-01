@@ -3,9 +3,9 @@ from scipy.fftpack import fft, fftshift, ifft
 import matplotlib.pyplot as plt
 import calibratesdr as cali
 
-def movingaverage (values, window):
+def movingaverage (values, window, mode = 'same'):
     weights = np.repeat(1.0, window)/window
-    sma = np.convolve(values, weights, 'same')
+    sma = np.convolve(values, weights, mode = mode)
     return sma
 
 def reduce_outliers(dif):
@@ -63,8 +63,10 @@ def get_fft(data, samplerate = 2048000):
 
     signal_fft = []
     window = samplerate
+    step = int(window * 2)
 
-    for slice in range(0, int(len(data) // (window * 2)) * window * 2, window * 2):
+    for slice in range(0, int(len(data) // (window * 2)) * window * 2 - step, step):
+
         data_slice = (adc_offset + data[slice: slice + window * 2: 2]) +\
                       1j * (adc_offset + data[slice + 1: slice + window * 2: 2])
 
