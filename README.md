@@ -11,7 +11,7 @@ python.exe cali.py -m dab -f YOURFILENAME -rs 2048000 -gr <br>
 
 <b>-m</b> choose from  dab  / dvbt / gsm <br>
 <b>-rs</b> set samplerate default is 2048000  <br>
-<b>-gr</b> to enable display of graph <br>
+<b>-gr</b> to enable display of graphs <br>
 
 ### Troubleshoot
 
@@ -24,4 +24,4 @@ Possible Solution : Add the following .dll/.so files to PATH
                     </ol>
 
 
-for more details visit [aerospaceresearch.net](https://aerospaceresearch.net/?page_id=2111)
+For more details visit [aerospaceresearch.net](https://aerospaceresearch.net/?page_id=2111)
