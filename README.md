@@ -9,13 +9,13 @@
 ### Basic commands
 python.exe cali.py -m dab -f YOURFILENAME -rs 2048000 -gr <br>
 
--m choose from  1. dab  2.dvbt  3.gsm <br>
--rs set samplerate default is 2048000  <br>
--gr to enable display of graph <br>
+<b>-m</b> choose from  dab  / dvbt / gsm <br>
+<b>-rs</b> set samplerate default is 2048000  <br>
+<b>-gr</b> to enable display of graph <br>
 
 ### Troubleshoot
 
-ImportError: Error loading librtlsdr
+ImportError: Error loading librtlsdr <br>
 Possible Solution : Add the following .dll/.so files to PATH
                     <ol>
                     <li>librtlsdr </li>
@@ -24,4 +24,4 @@ Possible Solution : Add the following .dll/.so files to PATH
                     </ol>
 
 
-for more details visit [https://aerospaceresearch.net](https://aerospaceresearch.net/?page_id=2111)
+for more details visit [aerospaceresearch.net](https://aerospaceresearch.net/?page_id=2111)
