@@ -10,5 +10,6 @@ Refer to this [issue](https://github.com/roger-/pyrtlsdr/issues/7#issuecomment-4
 
 * Arch-based OS: use AUR source [rtl-sdr-librtlsdr](https://aur.archlinux.org/packages/rtl-sdr-librtlsdr-git/)
 * Ubuntu/ Debiam based OS: Run ```sudo apt update && sudo apt install librtlsdr-dev```
+* On Windows, it gets automatically installed while using ```pip install pyrtlsdr```
 
 Note: After installing, make sure PATH has been define accordingly, for example: ```export LD_LIBRARY_PATH="/usr/local/lib"```
