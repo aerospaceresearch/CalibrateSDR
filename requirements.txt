@@ -3,3 +3,4 @@ scipy
 matplotlib
 pyrtlsdr
 tqdm
+pyparsing

@@ -33,7 +33,8 @@ def main(input):
 
             elif mode == "gsm":
                 print("starting mode: gsm")
-                cali.gsm.gsm.main()
+                frequency_center = input["fc"]
+                cali.gsm.gsm.main(filepath=filename, fc=frequency_center)
 
             else:
                 print("ending")
@@ -191,6 +192,11 @@ if __name__ == "__main__":
                            '--verbose',
                            action='store_true',
                            help='an optional argument')
+    my_parser.add_argument('-fc',
+                           action='store',
+                           type=int,
+                           help='frequency center',
+                           default=927400000)
 
     # Execute parse_args()
     args = my_parser.parse_args()

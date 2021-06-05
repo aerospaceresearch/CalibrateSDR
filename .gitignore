@@ -1,0 +1,7 @@
+# Unversioned folders
+
+/venv/*
+
+
+# Unversioned files extension
+*.pyc
