@@ -4,10 +4,12 @@ import matplotlib.pyplot as plt
 import calibratesdr as cali
 from rtlsdr.helpers import limit_calls
 
-def movingaverage (values, window):
+
+def movingaverage(values, window):
     weights = np.repeat(1.0, window)/window
     sma = np.convolve(values, weights, 'same')
     return sma
+
 
 def reduce_outliers(dif):
 
@@ -59,7 +61,7 @@ def signal_bar(snr, snr_max):
     return bar
 
 
-def get_fft(data, samplerate = 2048000):
+def get_fft(data, samplerate=2048000):
     adc_offset = -127
 
     signal_fft = []
@@ -67,8 +69,7 @@ def get_fft(data, samplerate = 2048000):
 
     for slice in range(0, int(len(data) // (window * 2)) * window * 2, window * 2):
         data_slice = (adc_offset + data[slice: slice + window * 2: 2]) +\
-                      1j * (adc_offset + data[slice + 1: slice + window * 2: 2])
-
+            1j * (adc_offset + data[slice + 1: slice + window * 2: 2])
 
         norm_fft = (1.0 / window) * fftshift(fft(data_slice))
         abs_fft = np.abs(norm_fft)
@@ -89,12 +90,14 @@ def record_with_rtlsdr(sdr, rs, cf, ns, rg, filename):
     f = open(filename, 'wb')
 
     BLOCK_SIZE = 2**20
+
     @limit_calls(ns * 2 / BLOCK_SIZE)
     def callback(data, context):
         f.write(data)
 
     sdr.read_bytes_async(callback, BLOCK_SIZE)
     f.close()
+
 
 def scan_one_dab_channel(dabchannels, channel, sdr, rs, ns, rg, filename, samplerate, show_graph, verbose):
 
@@ -104,7 +107,8 @@ def scan_one_dab_channel(dabchannels, channel, sdr, rs, ns, rg, filename, sample
     record_with_rtlsdr(sdr, rs, cf, ns, rg, filename)
 
     data = load_data(filename, offset=0)
-    dab_ppm = cali.dabplus.dab.get_ppm(data, samplerate=samplerate, show_graph=show_graph, verbose=verbose)
+    dab_ppm = cali.dabplus.dab.get_ppm(
+        data, samplerate=samplerate, show_graph=show_graph, verbose=verbose)
 
     dab_signal_fft = get_fft(data, samplerate=samplerate)
 
@@ -121,7 +125,8 @@ def scan_one_dab_channel(dabchannels, channel, sdr, rs, ns, rg, filename, sample
         plt.show()
 
     limit_db = 2.0
-    dab_block_detected = cali.dabplus.dab.block_check(dab_signal_bins, dab_snr, limit_db=limit_db)
+    dab_block_detected = cali.dabplus.dab.block_check(
+        dab_signal_bins, dab_snr, limit_db=limit_db)
 
     del data
 

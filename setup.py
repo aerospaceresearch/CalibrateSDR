@@ -7,7 +7,7 @@ with open("requirements.txt", "r") as fh:
     requirements = fh.readlines()
 
 setuptools.setup(
-    name="CalibrateSDR", # Replace with your own username
+    name="CalibrateSDR",  # Replace with your own username
     version="0.0.1",
     license="MIT",
     author="aerospaceresearch.net community",

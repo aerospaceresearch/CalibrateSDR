@@ -4,6 +4,7 @@ from tqdm import tqdm
 import time
 import calibratesdr as cali
 
+
 def main(input):
 
     print("let's find your SDR's oscillator precision")
@@ -24,7 +25,8 @@ def main(input):
 
             if mode == "dab":
                 print("starting mode: dab")
-                ppm = cali.dabplus.dab.get_ppm(data, samplerate=samplerate, show_graph=show_graph, verbose=verbose)
+                ppm = cali.dabplus.dab.get_ppm(
+                    data, samplerate=samplerate, show_graph=show_graph, verbose=verbose)
                 print("your sdr's precision is", ppm, "ppm")
 
             elif mode == "dvbt":
@@ -42,7 +44,6 @@ def main(input):
         else:
             print("sorry, file not found. try again.")
 
-
     elif input["s"] is not None:
         # scanning with your sdr
 
@@ -57,7 +58,7 @@ def main(input):
             sdr = RtlSdr(device_index=device)
             rs = input["rs"]
             rg = input["rg"]
-            ns = rs * input["nsec"] #seconds
+            ns = rs * input["nsec"]  # seconds
             c = input["c"]
 
             result = []
@@ -75,7 +76,8 @@ def main(input):
                         cali.utils.scan_one_dab_channel(dabchannels, channel, sdr, rs, ns, rg, filename, samplerate,
                                                         show_graph, verbose)
 
-                    result.append([channel, block, cf, dab_snr, dab_block_detected, dab_ppm])
+                    result.append([channel, block, cf, dab_snr,
+                                  dab_block_detected, dab_ppm])
 
             else:
                 print("Scanning only channel #", c)
@@ -85,8 +87,8 @@ def main(input):
                     cali.utils.scan_one_dab_channel(dabchannels, channel, sdr, rs, ns, rg, filename, samplerate,
                                                     show_graph, verbose)
 
-                result.append([channel, block, cf, dab_snr, dab_block_detected, dab_ppm])
-
+                result.append([channel, block, cf, dab_snr,
+                              dab_block_detected, dab_ppm])
 
             # output
             dab_snr_max = 0
@@ -94,10 +96,10 @@ def main(input):
                 if i == 0 or dab_snr_max < result[i][3]:
                     dab_snr_max = result[i][3]
 
-
             print("")
             print("____Results_______________________________________________________________________________________")
-            print("#   , block, freq [Hz], SNR [dB] , Prec. [ppm], offset [Hz], block [x][o][ ] & signal strength")
+            print(
+                "#   , block, freq [Hz], SNR [dB] , Prec. [ppm], offset [Hz], block [x][o][ ] & signal strength")
             print("--------------------------------------------------------------------------------------------------")
             for i in range(len(result)):
                 channel = result[i][0]
@@ -162,7 +164,7 @@ if __name__ == "__main__":
                            action='store',
                            type=str,
                            help='scan by \"all\" channels, by channel number \"0,1,...n\" or by blockname',
-                           default = 'all')
+                           default='all')
     my_parser.add_argument('-rs',
                            action='store',
                            type=int,

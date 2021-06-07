@@ -39,27 +39,29 @@ def spectrogram_plot(t_range, f_range, y, dbf=60, fig=None):
     # rescale image intensity to 256
     img = 256 * (y_log + dbf) / dbf - 1
 
-    fig = figure(figsize=(16, 6));
+    fig = figure(figsize=(16, 6))
 
-    plt.imshow(np.flipud(64.0 * (y_log + dbf) / dbf), extent=t_range + f_range, cmap=plt.cm.gray, aspect='auto');
-    plt.xlabel('Time, s');
-    plt.ylabel('Frequency, Hz');
-    plt.tight_layout();
+    plt.imshow(np.flipud(64.0 * (y_log + dbf) / dbf),
+               extent=t_range + f_range, cmap=plt.cm.gray, aspect='auto')
+    plt.xlabel('Time, s')
+    plt.ylabel('Frequency, Hz')
+    plt.tight_layout()
 
 
 def spectrogram_hann_ovlp(x, m, fs, fc, dbf=60, fig=None):
     # check if x is real
     isreal_bool = isreal(x).all()
 
-    lx = len(x);
+    lx = len(x)
     nt = (lx + m - 1) // m
     x = append(x, zeros(-lx + nt * m))
     x = x.reshape((m // 2, nt * 2), order='F')
     x = concatenate((x, x), axis=0)
     x = x.reshape((m * nt * 2, 1), order='F')
-    x = x[r_[m // 2:len(x), ones(m // 2) * (len(x) - 1)].astype(int)].reshape((m, nt * 2), order='F')
+    x = x[r_[m // 2:len(x), ones(m // 2) * (len(x) - 1)
+             ].astype(int)].reshape((m, nt * 2), order='F')
 
-    xmw = x * hanning(m)[:, None];
+    xmw = x * hanning(m)[:, None]
 
     # frequency index
     t_range = [0.0, lx / fs]
@@ -67,18 +69,18 @@ def spectrogram_hann_ovlp(x, m, fs, fc, dbf=60, fig=None):
     if isreal_bool:
         f_range = [fc, fs / 2.0 + fc]
         xmf = fft(xmw, len(xmw), axis=0)
-        fig = spectrogram_plot(t_range, f_range, xmf[0:m // 2, :], dbf, fig);
+        fig = spectrogram_plot(t_range, f_range, xmf[0:m // 2, :], dbf, fig)
     else:
         f_range = [-fs / 2.0 + fc, fs / 2.0 + fc]
         xmf = abs(fftshift(fft(xmw, len(xmw), axis=0), axes=0))
-        fig = spectrogram_plot(t_range, f_range, xmf, dbf, fig);
+        fig = spectrogram_plot(t_range, f_range, xmf, dbf, fig)
 
     return fig
 
+
 def main(filepath, fc):
 
-
-    fs , data = packed_bytes_to_iq(filepath)
+    fs, data = packed_bytes_to_iq(filepath)
     print(f"Sample rate used: {fs}")
 
     # Usage of Pyrtlsdr API - pending work [Just written for note]
@@ -110,7 +112,7 @@ def main(filepath, fc):
     spectrogram_hann_ovlp(data, 156, fs, fc, dbf=60)
     plt.show()
 
-    #Simple specgram
+    # Simple specgram
     plt.specgram(data, NFFT=256, Fs=fs)
     plt.title("Power spectral density of signal")
     plt.xlabel("Time")
@@ -127,4 +129,3 @@ def main(filepath, fc):
 
 # if __name__ == '__main__':
 #     main()
-
