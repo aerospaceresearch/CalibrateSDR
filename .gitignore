@@ -2,6 +2,7 @@
 
 /venv/*
 .vscode
+.idea
 
 test-file.py
 makeover-README.md

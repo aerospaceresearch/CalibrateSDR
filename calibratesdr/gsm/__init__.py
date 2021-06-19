@@ -1,1 +1,1 @@
-from calibratesdr.gsm import gsm
+from calibratesdr.gsm import gsm2

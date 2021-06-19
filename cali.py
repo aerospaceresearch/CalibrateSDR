@@ -36,7 +36,7 @@ def main(input):
             elif mode == "gsm":
                 print("starting mode: gsm")
                 frequency_center = input["fc"]
-                cali.gsm.gsm.main(filepath=filename, fc=frequency_center)
+                cali.gsm.gsm2.main(filepath=filename, fc=frequency_center)
 
             else:
                 print("ending")
@@ -137,7 +137,7 @@ def main(input):
 
         elif mode == "gsm":
             print("starting mode: gsm")
-            cali.gsm.gsm.main()
+            cali.gsm.gsm2.main()
 
         else:
             print("ending")
