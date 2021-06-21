@@ -1,28 +1,3 @@
-### Currentlt working status: GSM Implementation |========>  | (95%)
-
-### Flowscharts working upon:
-
-
-![spectrogram_hann](./tests/gsm/Screenshot-spectrogram_hann.png "Nothing")
-
-The above plot has been generated using spectrogram_plot function from [fcch_offset.py](calibratesdr/gsm/fcch_offset.py)
-
-Zoomed figure to see the fcch bursts occuring. 
-
-![spectrogram_hann](tests/gsm/Screenshot-spectrogram_hann-Zoomed.png)
-
-
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
-### Documentation work starts here:
-#### [README.md](./README.md)
-
 # CalibrateSDR
 _A precise tool to calculate offset of SDR device_ 📻
 
@@ -41,3 +16,17 @@ CalibrateSDR can be used with almost any SDR to determine the frequency offset. 
 <br>
 <br>
 
+
+
+
+## Troubleshooting
+
+If running the program throws error- ```AttributeError: python: undefined symbol: rtlsdr_get_device_count```, try this:
+ 
+Refer to this [issue](https://github.com/roger-/pyrtlsdr/issues/7#issuecomment-47391543). If it still persists, build [librtlsdr](https://github.com/librtlsdr/librtlsdr) from it source and make sure it's path is defined correctly. 
+
+* Arch-based OS: use AUR source [rtl-sdr-librtlsdr](https://aur.archlinux.org/packages/rtl-sdr-librtlsdr-git/)
+* Ubuntu/ Debiam based OS: Run ```sudo apt update && sudo apt install librtlsdr-dev```
+* On Windows, it gets automatically installed while using ```pip install pyrtlsdr```
+
+Note: After installing, make sure PATH has been define accordingly, for example: ```export LD_LIBRARY_PATH="/usr/local/lib"```

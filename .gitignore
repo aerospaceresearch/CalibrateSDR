@@ -7,6 +7,7 @@
 test-file.py
 makeover-README.md
 /testing-signal.py
+/gsm2.py
 
 # Unversioned files extension
 *.pyc
@@ -171,3 +172,4 @@ cython_debug/
 pyvenv.cfg
 .venv
 pip-selfcheck.json
+/calibratesdr/gsm/chirpz_transform.py
