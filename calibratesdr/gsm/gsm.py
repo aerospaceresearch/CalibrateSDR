@@ -1,11 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
-#from numpy.fft import *
 from scipy import signal
+from .arfcn_freq import channels
 
 
 def wav_to_iq(file_path, from_index=2000, to_index=748000):
+    """
+    Input: file path towards IQ file as .wav
+    Output: sample rate and array with memmap true
+    """
 
     sample_rate, data = wavfile.read(file_path, True)
     samples = data[from_index:to_index, 0] + 1j * data[from_index:to_index, 1]
@@ -14,7 +18,11 @@ def wav_to_iq(file_path, from_index=2000, to_index=748000):
 
 
 def avg_power_spectrum(data, N=256, fs=1):
-
+    """
+    Input: array of IQ sample, N, sampling rate
+    Output: average spectrum (using np.abs)
+    """
+    
     M = int(np.floor(len(data)/N))
     data_ = np.reshape(data[:M*N], (M, N)) * np.hamming(N)[None, :]
     X = np.fft.fftshift(np.fft.fft(data_, axis=1), axes=1)
@@ -23,12 +31,19 @@ def avg_power_spectrum(data, N=256, fs=1):
 
 
 def spectrogram_plot(t_range, f_range, y, dbf=60, fig=None):
-
+    """
+    Input --
+    t_range: time axis, nt samples
+    f_range: frequency axis, nf samples
+    dbf: Dynamic range of the spectrum
+    
+    Output --
+    Spectrogram, with xlabel Time in sec and ylabel Frequency in Hz
+    """
     eps = 10.0**(-dbf/20.0)  # minimum signal
     y_max = abs(y).max()
 
     y_log = 20.0 * np.log10((abs(y) / y_max)*(1-eps) + eps)
-    #img = 256*(y_log + dbf)/dbf - 1
 
     fig = plt.figure(figsize=(16, 6))
     plt.imshow(np.flipud(64.0*(y_log + dbf)/dbf), extent=t_range +
@@ -40,7 +55,10 @@ def spectrogram_plot(t_range, f_range, y, dbf=60, fig=None):
 
 
 def spectrogram_hann(data, m, fs, fc, dbf=60, fig=None):
-
+    """
+    Split it into blocks of length m. 
+    Function plots the spectrogram of x, calling function spectrogram_plot
+    """
     isreal_bool = np.isreal(data).all()
     # print(isreal_bool)
 
@@ -69,17 +87,18 @@ def spectrogram_hann(data, m, fs, fc, dbf=60, fig=None):
 
     return fig
 
-def compute_offset(data, m, fs, fc=0):
-    burst_t = 576.9e-6 #seconds
+def offset_plot(data, m, fs, fc=0):
+    
+    burst_t = 576.9e-6 
     burst_len = 1 + fs*burst_t//1
-    fcc = fc + 250000 # approximate frequency of the FCCH burst
+    fcc = fc + 250000
     demod_data = np.exp(-1j * fcc * np.linspace(0,len(data),len(data)))*data
     
     spectrogram_hann(demod_data, m, fs, fcc)
     plt.show()
     
     
-    h = signal.firwin(burst_len,7500,fs,window='hanning')
+    h = signal.firwin(141,75000,nyq=2400000.0/2,window='hanning')
     filtered_data = signal.fftconvolve(demod_data, h)[::10]
     spectrogram_hann(filtered_data, m, fs/10, fcc)
     plt.show()
@@ -91,19 +110,8 @@ def compute_offset(data, m, fs, fc=0):
     plt.show()
 
     
-    
-    
-def gsm_plots(filepath=None, fc=0):
-
-    
-    filepath = "/home/jayaraj/Projects/calibratesdr_sdrtest/GSM/sdr-gsm-recordings/SDRSharp_20210327_124115Z_935800000Hz_IQ.wav"
-    
-    if filepath==None:
-        print("No filepath specified, please retry giving -filepath argument")
-        
-    
-
-    fs, data = wav_to_iq(filepath)
+def gsm_plots(data, fs, fc=0):
+     
     print(f"Sample rate used: {fs}")
     
     f, sp = avg_power_spectrum(data, N=256, fs=fs/1000)
@@ -113,7 +121,6 @@ def gsm_plots(filepath=None, fc=0):
     plt.xlabel('frequency offset [KHz]')
     plt.show()
 
-    # plot
     plt.figure(figsize=(16, 4))
     plt.plot(np.r_[0:12000.0]/fs*1000, abs(data[:12000]))
     plt.title('Magnitude GSM signal, showing TDMA frames')
@@ -122,10 +129,32 @@ def gsm_plots(filepath=None, fc=0):
 
     m = 500  # window length
     spectrogram_hann(data, m, fs, fc)
-    plt.show()
+    #plt.show()
 
-    compute_offset(data, m, fs, fc=0)
+    offset_plot(data, m, fs, fc=0)
+
+def main(filepath=None, fc=0, sdr=False, input=input):
     
+    if filepath!=None:
+        fs, data = wav_to_iq(filepath)
+        #if input["gr"]== True
+        gsm_plots(data, fs, fc)
+    
+    
+    if sdr==True:
+        from rtlsdr import RtlSdr
+        print("starting mode: gsm")
+        filename = "tmp.dat"
+        device = input["rd"]
+        sdr = RtlSdr(device_index=device)
+        rs = input["rs"]
+        rg = input["rg"]
+        ns = rs * input["nsec"]  # seconds
+        c = input["c"]
+        gsm_channels = channels()
+    
+    
+    # gsm_plots()
 
 if __name__ == "__main__":
-    gsm_plots()
+    main()

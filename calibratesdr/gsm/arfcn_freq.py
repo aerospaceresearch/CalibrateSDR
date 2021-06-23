@@ -1,7 +1,6 @@
 # This code can be used to get the frequency from AFRCN.
 # For more information: http://www.telecomabc.com/a/arfcn.html
 
-
 def channel_selector(arg):
     switcher = {
         "GSM_850": 128,
@@ -108,3 +107,5 @@ def freq_to_arfcn(freq, band_indicator):
     print(f"error: bad frequency: {freq}")
     return -1
 
+def channels():
+    pass
