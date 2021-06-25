@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
 from scipy import signal
-from .arfcn_freq import channels
+from .arfcn_freq import channels as gsm_channels
 
 
 def wav_to_iq(file_path, from_index=2000, to_index=748000):
@@ -84,21 +84,21 @@ def spectrogram_hann(data, m, fs, fc, dbf=60, fig=None):
         f_range = [-fs / 2.0 + fc, fs / 2.0 + fc]
         xmf = abs(np.fft.fftshift(np.fft.fft(xmw, len(xmw), axis=0), axes=0))
         fig = spectrogram_plot(t_range, f_range, xmf, dbf, fig)
-
-    return fig
+    plt.show()
+    return None
 
 def offset_plot(data, m, fs, fc=0):
     
     burst_t = 576.9e-6 
     burst_len = 1 + fs*burst_t//1
-    fcc = fc + 250000
+    fcc = fc + 5000
     demod_data = np.exp(-1j * fcc * np.linspace(0,len(data),len(data)))*data
     
     spectrogram_hann(demod_data, m, fs, fcc)
-    plt.show()
+    #plt.show()
     
     
-    h = signal.firwin(141,75000,nyq=2400000.0/2,window='hanning')
+    h = signal.firwin(141,7500,nyq=2400000.0/2,window='hanning')
     filtered_data = signal.fftconvolve(demod_data, h)[::10]
     spectrogram_hann(filtered_data, m, fs/10, fcc)
     plt.show()
@@ -128,7 +128,7 @@ def gsm_plots(data, fs, fc=0):
     plt.show()
 
     m = 500  # window length
-    spectrogram_hann(data, m, fs, fc)
+    #spectrogram_hann(data, m, fs, fc)
     #plt.show()
 
     offset_plot(data, m, fs, fc=0)
@@ -151,7 +151,7 @@ def main(filepath=None, fc=0, sdr=False, input=input):
         rg = input["rg"]
         ns = rs * input["nsec"]  # seconds
         c = input["c"]
-        gsm_channels = channels()
+        gsm_channels()
     
     
     # gsm_plots()
