@@ -29,7 +29,7 @@ def main(input):
 
             elif mode == "dvbt":
                 print("starting mode: dvbt")
-                cali.dvbt.dvbt.main()
+                cali.dvbt.dvbt.get_ppm()
 
             elif mode == "gsm":
                 print("starting mode: gsm")
