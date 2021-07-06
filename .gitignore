@@ -8,6 +8,7 @@ test-file.py
 makeover-README.md
 /testing-signal.py
 /gsm2.py
+/testing.ipynb
 
 # Unversioned files extension
 *.pyc

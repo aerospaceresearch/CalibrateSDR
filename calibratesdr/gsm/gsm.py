@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.io import wavfile
 from scipy import signal
 from .arfcn_freq import channels as gsm_channels
+from .fcch_offset import calculate_offset
 
 
 def wav_to_iq(file_path, from_index=2000, to_index=748000):
@@ -152,6 +153,8 @@ def main(filepath=None, fc=0, sdr=False, input=input):
         ns = rs * input["nsec"]  # seconds
         c = input["c"]
         gsm_channels()
+        
+        
     
     
     # gsm_plots()
