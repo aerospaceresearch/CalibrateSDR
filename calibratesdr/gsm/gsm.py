@@ -96,7 +96,7 @@ def offset_plot(data, m, fs, fc=0):
     demod_data = np.exp(-1j * fcc * np.linspace(0,len(data),len(data)))*data
     
     spectrogram_hann(demod_data, m, fs, fcc)
-    #plt.show()
+    plt.show()
     
     
     h = signal.firwin(141,7500,nyq=2400000.0/2,window='hanning')
@@ -128,9 +128,9 @@ def gsm_plots(data, fs, fc=0):
     plt.xlabel('t [ms]')
     plt.show()
 
-    m = 500  # window length
-    #spectrogram_hann(data, m, fs, fc)
-    #plt.show()
+    m = 250  # window length
+    spectrogram_hann(data, m, fs, fc)
+    plt.show()
 
     offset_plot(data, m, fs, fc=0)
 
@@ -140,11 +140,10 @@ def main(filepath=None, fc=0, sdr=False, input=input):
         fs, data = wav_to_iq(filepath)
         #if input["gr"]== True
         gsm_plots(data, fs, fc)
+        #calculate_offset(data, fs, fc)
     
-    
-    if sdr==True:
+    if filepath==None and sdr==True:
         from rtlsdr import RtlSdr
-        print("starting mode: gsm")
         filename = "tmp.dat"
         device = input["rd"]
         sdr = RtlSdr(device_index=device)
@@ -152,8 +151,10 @@ def main(filepath=None, fc=0, sdr=False, input=input):
         rg = input["rg"]
         ns = rs * input["nsec"]  # seconds
         c = input["c"]
-        gsm_channels()
+        print(open)
         
+        #gsm_channels()
+        #calculate_offset(data, fs, fc)
         
     
     
