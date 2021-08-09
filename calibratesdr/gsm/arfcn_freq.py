@@ -1,19 +1,19 @@
 # This code can be used to get the frequency from AFRCN.
 # For more information: http://www.telecomabc.com/a/arfcn.html
 
-def channel_selector(arg):
+def arfcn_selector(arg):
     switcher = {
-        "GSM_850": 128,
-        "GSM_R_900": 955,
-        "GSM_900": 1,
-        "GSM_E_900": 0,
-        "DCS_1800": 512,
-        "PCS_1900": 512
+        "GSM_850": (128,251),
+        "GSM_R_900": (955,1023),
+        "GSM_900": (1,124),
+        "GSM_E_900": (0,124),
+        "DCS_1800": (512, 885),
+        "PCS_1900": (512, 810)
     }
     return switcher.get(arg, -1)
 
 
-def arfcn_to_freq(arfcn, band_indicator):
+def arfcn_to_freq(band_indicator, arfcn=None):
     """
     Input: arfcn = absolute radio-frequency channel number (ARFCN)
            band_indicator = band designation 
@@ -107,5 +107,6 @@ def freq_to_arfcn(freq, band_indicator):
     print(f"error: bad frequency: {freq}")
     return -1
 
-def channels():
-    pass
+def channels(band_indicator):
+    
+    band_indicator = 
