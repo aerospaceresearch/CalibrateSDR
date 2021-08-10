@@ -3,17 +3,17 @@
 
 def arfcn_selector(arg):
     switcher = {
-        "GSM_850": (128,251),
-        "GSM_R_900": (955,1023),
-        "GSM_900": (1,124),
-        "GSM_E_900": (0,124),
+        "GSM_850": (128, 251),
+        "GSM_R_900": (955, 1023),
+        "GSM_900": (1, 124),
+        "GSM_E_900": (0, 124),
         "DCS_1800": (512, 885),
         "PCS_1900": (512, 810)
     }
     return switcher.get(arg, -1)
 
 
-def arfcn_to_freq(band_indicator, arfcn=None):
+def arfcn_to_freq(band_indicator, arfcn):
     """
     Input: arfcn = absolute radio-frequency channel number (ARFCN)
            band_indicator = band designation 
@@ -107,6 +107,25 @@ def freq_to_arfcn(freq, band_indicator):
     print(f"error: bad frequency: {freq}")
     return -1
 
-def channels(band_indicator):
-    
-    band_indicator = 
+
+def channels(band_indicator, arfcn=None):
+
+    if arfcn == None:
+        print(f"Scanning all GSM frequencies in {band_indicator}")
+        (start, end) = arfcn_selector(band_indicator)
+        gsm_freq = []
+        for arfcn_no in range(start, end+1):
+            gsm_freq.append(arfcn_to_freq(band_indicator, arfcn=arfcn_no))
+    return gsm_freq
+
+
+if __name__ == "__main__":
+    print("GSM Bands: \n\t=>GSM_850\n\t=>GSM_R_900\n\t=>GSM_900\n\t=>GSM_E_900\n\t=>DCS_1800\n\t=>PCS_1900")
+    gsm_band = input("Enter band you would like to scan:  ")
+    gsm_freq = channels(gsm_band)
+    print(gsm_freq)
+
+
+#Pending ARFCN 
+# - GSM_R_900 0-124
+# - GSM_E_900 975-1023
