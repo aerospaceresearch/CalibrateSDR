@@ -153,6 +153,9 @@ def main(filepath=None, fc=0, sdr=False, input=input):
         c = input["c"]
         print(open)
         
+        
+        
+        
         #gsm_channels()
         #calculate_offset(data, fs, fc)
         
