@@ -211,7 +211,13 @@ def channels():
         {"block": "12N", "f_center": 224096000},
         {"block": "12B", "f_center": 225648000},
         {"block": "12C", "f_center": 227360000},
-        {"block": "12D", "f_center": 229072000}
+        {"block": "12D", "f_center": 229072000},
+        {"block": "13A", "f_center": 230784000},
+        {"block": "13B", "f_center": 232496000},
+        {"block": "13C", "f_center": 234208000},
+        {"block": "13D", "f_center": 235776000},
+        {"block": "13E", "f_center": 237488000},
+        {"block": "13F", "f_center": 239200000}
     ]}
 
     return dab

@@ -1,6 +1,6 @@
 import argparse
 import os
-# from tqdm import tqdm
+from tqdm import tqdm
 import time
 import calibratesdr as cali
 
@@ -29,11 +29,11 @@ def main(input):
 
             elif mode == "dvbt":
                 print("starting mode: dvbt")
-                # cali.dvbt.dvbt.get_ppm()
+                cali.dvbt.dvbt.main()
 
             elif mode == "gsm":
                 print("starting mode: gsm")
-                # cali.gsm.gsm.main()
+                cali.gsm.gsm.main()
 
             else:
                 print("ending")
@@ -130,11 +130,11 @@ def main(input):
 
         elif mode == "dvbt":
             print("starting mode: dvbt")
-            # cali.dvbt.dvbt.main()
+            cali.dvbt.dvbt.main()
 
         elif mode == "gsm":
             print("starting mode: gsm")
-            # cali.gsm.gsm.main()
+            cali.gsm.gsm.main()
 
         else:
             print("ending")
