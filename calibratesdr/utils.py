@@ -2,7 +2,6 @@ import numpy as np
 from scipy.fftpack import fft, fftshift, ifft
 import matplotlib.pyplot as plt
 import calibratesdr as cali
-from rtlsdr.helpers import limit_calls
 
 def movingaverage (values, window):
     weights = np.repeat(1.0, window)/window
@@ -86,15 +85,13 @@ def record_with_rtlsdr(sdr, rs, cf, ns, rg, filename):
     sdr.fc = cf
     sdr.gain = rg
 
+    samples = sdr.read_bytes(ns * 2)
+
     f = open(filename, 'wb')
-
-    BLOCK_SIZE = 2**20
-    @limit_calls(ns * 2 / BLOCK_SIZE)
-    def callback(data, context):
-        f.write(data)
-
-    sdr.read_bytes_async(callback, BLOCK_SIZE)
+    f.write(samples)
     f.close()
+
+    return samples
 
 def scan_one_dab_channel(dabchannels, channel, sdr, rs, ns, rg, filename, samplerate, show_graph, verbose):
 
