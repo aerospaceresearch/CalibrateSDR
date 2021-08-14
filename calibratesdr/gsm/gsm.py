@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
 from scipy import signal
+from ..utils import record_with_rtlsdr
 from .arfcn_freq import channels as gsm_channels
 from .fcch_offset import calculate_offset
 
@@ -134,6 +135,8 @@ def gsm_plots(data, fs, fc=0):
 
     offset_plot(data, m, fs, fc=0)
 
+
+
 def main(filepath=None, fc=0, sdr=False, input=input):
     
     if filepath!=None:
@@ -151,6 +154,8 @@ def main(filepath=None, fc=0, sdr=False, input=input):
         rg = input["rg"]
         ns = rs * input["nsec"]  # seconds
         c = input["c"]
+        
+        record_with_rtlsdr(sdr, rs, fc, ns, rg, filename)
         print(open)
         
         
