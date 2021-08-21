@@ -3,17 +3,20 @@ import os
 from tqdm import tqdm
 import time
 import calibratesdr as cali
+import sys
+
+
 
 def main(input):
 
     print("let's find your SDR's oscillator precision")
-
+    
     show_graph = input["graph"]
     verbose = input["verbose"]
-
+    frequency_center = input["fc"]
     samplerate = input["rs"]
     mode = input["m"]
-    frequency_center = input["fc"]
+    
 
     if input["f"] is not None:
         print("loading file...")
@@ -132,7 +135,7 @@ def main(input):
 
         elif mode == "dvbt":
             print("starting mode: dvbt")
-            cali.dvbt.dvbt.main(frequency_center,samplerate,show_graph)
+            cali.dvbt.dvbt.main(frequency_center=frequency_center, samplerate=samplerate, show_graph=show_graph)
 
         elif mode == "gsm":
             print("starting mode: gsm")
@@ -157,7 +160,7 @@ if __name__ == "__main__":
     my_parser.add_argument('-s',
                            action='store',
                            choices=['rtlsdr'],
-                           help='scan with rtlsdr',
+                           help='scan with rtls dr',
                            default='rtlsdr')
     my_parser.add_argument('-c',
                            action='store',
@@ -193,9 +196,15 @@ if __name__ == "__main__":
                            '--verbose',
                            action='store_true',
                            help='an optional argument')
+    my_parser.add_argument('-fc',
+                           action='store',
+                           type=int,
+                           help='center frequency',
+                           default=0)
 
     # Execute parse_args()
     args = my_parser.parse_args()
     print(vars(args))
 
     main(vars(args))
+
