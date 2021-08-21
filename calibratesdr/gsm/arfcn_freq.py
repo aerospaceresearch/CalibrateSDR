@@ -1,6 +1,9 @@
 # This code can be used to get the frequency from AFRCN.
 # For more information: http://www.telecomabc.com/a/arfcn.html
 
+from logging import raiseExceptions
+
+
 def arfcn_selector(arg):
     switcher = {
         "GSM_850": (128, 251),
@@ -140,7 +143,8 @@ def band_key(key):
         band_indicator = "DCS_1800"
     elif key in ("PCS_1900", "PCS", "PCS-1900", "1900", "GSM1900"):
         band_indicator = "PCS_1900"
-
+    else:
+        raise ValueError("Band Not Found")
     return band_indicator
 
 

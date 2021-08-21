@@ -198,7 +198,7 @@ if __name__ == "__main__":
                            action='store',
                            type=int,
                            help='frequency center',
-                           default=927400000)
+                           default=None)
 
     # Execute parse_args()
     args = my_parser.parse_args()
