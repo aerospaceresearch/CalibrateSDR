@@ -13,6 +13,7 @@ def main(input):
 
     samplerate = input["rs"]
     mode = input["m"]
+    frequency_center = input["fc"]
 
     if input["f"] is not None:
         print("loading file...")
@@ -29,7 +30,6 @@ def main(input):
 
             elif mode == "dvbt":
                 print("starting mode: dvbt")
-                frequency_center = input["fc"]
                 ppm = cali.dvbt.dvbt.get_ppm(data,samplerate,frequency_center,show_graph)
                 print("your sdr's precision is", ppm, "ppm")
 
