@@ -39,6 +39,10 @@ def main(input):
             elif mode == "gsm":
                 print("starting mode: gsm")
                 cali.gsm.gsm.main()
+            
+            elif mode == "atsc":
+                print("starting mode: atsc")
+                cali.atsc.atsc.main()
 
             else:
                 print("ending")
@@ -141,6 +145,10 @@ def main(input):
             print("starting mode: gsm")
             cali.gsm.gsm.main()
 
+        elif mode == "atsc":
+            print("starting mode: atsc")
+            cali.atsc.atsc.main()
+
         else:
             print("ending")
 
@@ -154,7 +162,7 @@ if __name__ == "__main__":
                            help='select path to input file')
     my_parser.add_argument('-m',
                            action='store',
-                           choices=['dab', 'dvbt', 'gsm'],
+                           choices=['dab', 'dvbt', 'gsm', 'atsc'],
                            help='select mode',
                            default='dab')
     my_parser.add_argument('-s',

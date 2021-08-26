@@ -184,7 +184,7 @@ def show_offset(freq_offset,num_symbols):
     '''
     Shows the graph to changing frequency offset.
     '''
-    plt.plot(freq_offset[num_symbols-1,::])
+    plt.plot(freq_offset[::,0])
     plt.title("Change in Frequency offset over time")
     plt.grid()
     plt.xlabel("Time")
