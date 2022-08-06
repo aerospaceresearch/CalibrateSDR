@@ -78,8 +78,12 @@ def main(input):
 
             else:
                 print("Scanning only channel #", c)
+                channel = c
+                for i in range(len(dabchannels["dab"])):
+                    if dabchannels["dab"][i]['block'] == c:
+                        channel = i
+                        break
 
-                channel = int(c)
                 channel, block, cf, dab_snr, dab_block_detected, dab_ppm = \
                     cali.utils.scan_one_dab_channel(dabchannels, channel, sdr, rs, ns, rg, filename, samplerate,
                                                     show_graph, verbose)
