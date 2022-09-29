@@ -77,12 +77,20 @@ def main(input):
                     result.append([channel, block, cf, dab_snr, dab_block_detected, dab_ppm])
 
             else:
-                print("Scanning only channel #", c)
                 channel = c
                 for i in range(len(dabchannels["dab"])):
                     if dabchannels["dab"][i]['block'] == c:
                         channel = i
                         break
+                if(channel == c):
+                    try:
+                        channel = int(c)
+                    except:
+                        raise Exception('Channel "' + c + '" not found')
+                    if(channel < 0 and channel >= len(dabchannels["dab"])):
+                        raise Exception('Index "' + channel + '" not defined')
+
+                print("Scanning only channel #", dabchannels["dab"][channel]['block'])
 
                 channel, block, cf, dab_snr, dab_block_detected, dab_ppm = \
                     cali.utils.scan_one_dab_channel(dabchannels, channel, sdr, rs, ns, rg, filename, samplerate,
